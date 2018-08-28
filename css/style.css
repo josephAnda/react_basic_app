@@ -1,4 +1,10 @@
+/* Figure out how to correctly apply css styles */
+
 body {
   background-color: #000;
   color: #fff;
+}
+
+.buttonArea {
+  background-color: blue;
 }
