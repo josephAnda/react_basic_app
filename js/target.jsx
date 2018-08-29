@@ -3,7 +3,7 @@
 const employee = {
   firstName: 'Joseph',
   lastName: 'Anda',
-  dayNumber: 2,
+  dayNumber: 3,
   AID: 'A1411503'
 };
 
@@ -18,69 +18,84 @@ function formatName(employee) {
   return employee.firstName + ' ' + employee.lastName;
 }
 
-//  Below is a functional component, which is a component that is literally defined by
-// a JavaScript function.
-function UserInfo(props) {
-  return (
-    <p>In this example, we are displaying information from a user-defined
-      functional component.  The name is set as a property (in this case, Hello {props.name}).
-      We can also set additional properties with each instance of the component such as
-      AID (in this case, the AID is {props.AID})
-    </p>
-  );
-}
 
-const Header = React.createClass({
 
-  render: function() {
-    return(
-      <h1>Hello, {formatName(employee)} . . . This is a sample display item rendered via React!
-      Your AID is {employee.AID}
-      </h1>
-    );
-  }
-});
-// The introParagraph is a workaround for the syntax highlighting bugs, and the
-// alternative would be to keep the syntax highlighting within the render function.
+//  Old School React:
 
-var introParagraph = "(If you've been keeping track of the days), you'll know it is \
-Day " + employee.dayNumber + ".  The main advantage of using React is the ability \
-to encapsulate components and specific properties inside of other components.\
-You'll also notice that the text here can be concatenated with variables,\
-constants, and other valid JavaScript constructions using JSX.  \
-The 'button' component below is a simple functional component";
-
-// var Intro = React.createClass({
-//
-//   render: function() {
-//     return(
-//       <p>{introParagraph}</p>
+// const Header = React.createClass({
+//   render() {
+//     return (
+//       <h1>
+//         Hello, {formatName(employee)}--This is a sample display item rendered via React!
+//         Your AID is {employee.AID}
+//       </h1>
 //     );
 //   }
 // });
 
+//  Vs. ES6 Class component declaration:
 
-//  The code below is the current implementation of the commented version above
-class Intro extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <p>{introParagraph}</p>
-    );
-  }
-}
-
-// var Button = function(props) {
+// class Header extends React.Component {
+//   render() {
 //     return (
-//       <button>
-//         Liked:  {props.count} Times
-//       </button>
+//       <h1>
+//         Hello, {formatName(employee)}--This is a sample display item rendered via React!
+//         Your AID is {employee.AID}
+//       </h1>
 //     );
+//   }
 // }
 
-// Below we redo the commented code above to integrate state, which is private to the component
+//  Vs. a stateless functional component, (which works if there is no state to track)
+
+// function Header(props) {
+//   return (
+//     <h1>
+//     Hello, {formatName(employee)}--This is a sample display item rendered via React!
+//     Your AID is {employee.AID}
+//     </h1>
+//   );
+// }
+
+//  Vs ES6 arrow function (again, only works for stateless functional components (?))
+const Header = (props) => (
+  <h1>
+    Hello, {formatName(employee)}.  This is a sample display item rendered via React!
+    your AID is {props.AID}
+  </h1>
+);
+
+const Intro = (props) => (
+  <p>{introParagraph}</p>
+);
+
+const UserInfo = (props) => (
+  <p>
+    In this next sample, we are displaying information from a user-defined
+    functional component.  The name is set as a property (in this case, Hello {props.name}).
+    We can also set additional properties with each instance of the component such as
+    AID (in this case, the AID is {props.AID})
+  </p>
+);
+
+
+const Footer = (props) => (
+  <p className="footer">
+    This is the footer, which is a simple stateless functional component.
+    (Written by {props.name}).
+  </p>
+);
+// The introParagraph is a workaround for the syntax highlighting bugs, and the
+// alternative would be to keep the syntax highlighting within the render function.
+// Note the use of template literals with `` (ie back-ticks or accent graves) and
+// ${expression} (i.e. placeholders).
+
+var introParagraph = `(If you've been keeping track of the days), you'll know it is
+Day ${employee.dayNumber}.  The main advantage of using React is the ability
+to encapsulate components and specific properties inside of other components.
+You'll also notice that the text here can be concatenated with variables,
+constants, and other valid JavaScript constructions using JSX.
+The 'button' component below is a simple functional component`;
 
 class Button extends React.Component {
   constructor(props) {
@@ -141,24 +156,17 @@ class Button extends React.Component {
   }
 }
 
-
-var MainComponent = React.createClass({
-
-  render: function(){
-    return (
-      <div className="mainDisplay">
-        <Header />
-        <Intro />
-        <Button />
-        <UserInfo name={employee.firstName} AID={employee.AID} />
-        <UserInfo name='John Doe' AID={12345} />
-        <UserInfo name='Jane Doe' AID={6789} />
-      </div>
-    );
-  },
-});
+var MainComponent = (props) => (
+  <div className="mainDisplay">
+    <Header AID={props.AID}/>
+    <Intro />
+    <Button />
+    <UserInfo name={employee.firstName} AID={props.AID} />
+    <Footer name={props.name} />
+  </div>
+);
 
 ReactDOM.render(
-  <MainComponent />,
+  <MainComponent AID={employee.AID} name={employee.firstName} />,
   targetDiv
 );
